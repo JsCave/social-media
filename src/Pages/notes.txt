@@ -1,0 +1,54 @@
+import React from "react";
+import {Button, Input, Select, SelectItem} from "@heroui/react";
+import { useForm } from "react-hook-form";
+import * as zod from "zod"
+
+const schema=zod.object({
+    name:zod.string()
+    .min(3,"minimum 3 letters")
+    .max(20,"maximum 20 letters"),
+    email:zod.string()
+    .regex(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,"email is invalid")
+})
+
+
+export default function RegisterPage(){
+const{handleSubmit,register,formState:{errors}}=useForm({
+    defaultValues:{
+        name:"",
+        email:"",
+        password:"",
+        rePassword:"",
+        dateOfBirth:"",
+        gender:""
+    },
+    resolver: zodResolver()
+})
+console.log(errors)
+    function handleRegister(formData){
+console.log(formData)
+
+    }
+    return(
+        <>
+        <div className="flex items-center h-full bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded">
+        <div className="inline-flex flex-col gap-5 items-center p-10 shadow-lg mx-auto  border-1 relative">
+<h1 className="font-mono text-6xl">Register</h1>
+<form className="inline-flex flex-col gap-5 items-center" onSubmit={handleSubmit(handleRegister)}>
+<Input isInvalid={Boolean(errors.name?.message)} errorMessage={errors.name?.message} label="UserName" placeholder="UserName" type="name" variant="bordered" {...register('name',{required:"its required",minLength:{value:3,message:"min 3 letters"}})}/>
+<Input label="Email" placeholder="Email" type="email" variant="bordered"  {...register('email',{required:true})}/>
+<Input label="Password" placeholder="Password" type="password" variant="bordered"  {...register('password',{required:true})}/>
+<Input label="Confirm Password" placeholder="Confirm Password" type="password" variant="bordered"  {...register('rePassword',{required:true})}/>
+<Input label="Date Of Birth" placeholder="Date Of Birth" type="date" variant="bordered"  {...register('dateOfBirth',{required:true})}/>
+<Select label="Gender" placeholder="Gender" variant="bordered"  {...register('gender',{required:true})}>
+<SelectItem key={"male"}>Male</SelectItem>
+<SelectItem key={"Female"}>Female</SelectItem>
+</Select>
+<Button type='submit' color="primary" variant="bordered">Registered</Button>
+</form>
+        </div>
+        </div>
+        </>
+    )
+}
+
